@@ -3,6 +3,8 @@ import serial
 import sys
 import glob
 import qt.design
+import pyzbar.pyzbar as pyzbar
+
 
 from PyQt5.QtWidgets import QWidget, QLabel, QApplication
 from PyQt5 import QtWidgets
@@ -37,7 +39,6 @@ def serial_ports():
             pass
     return result
 
-face_cascade = cv2.CascadeClassifier('models/face.xml')
 font = cv2.FONT_HERSHEY_SIMPLEX
 
 class Thread(QThread):
@@ -58,23 +59,19 @@ class Thread(QThread):
         cap = cv2.VideoCapture(1)
         x2, y2 = cap.get(3) // 2, cap.get(4) // 2
         while True:
-            ret, frame = cap.read()
+            _, frame = cap.read()
 
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            decodedObjects = pyzbar.decode(frame)
+            for obj in decodedObjects:
+                print(obj)
+                x, y, w, h = obj.rect
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 5)
 
-            faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-            img = frame
-            for (x, y, w, h) in faces:
-                x1, y1 = x, y
-                print("Faces: " + str((x + w // 2, y + h // 2)))
-                img = cv2.circle(frame, (x + w // 2, y + h // 2), 15, (255, 255, 255), 2)
-                img = cv2.putText(img, "Face: " + str((x + w // 2, y + h // 2)), (x, y), font,
-                                    1, (255, 255, 255), 2, cv2.LINE_AA)
+            cv2.imshow("Frame", frame)
 
-                if x1 < x2: self.ser.write(b'l')
-                if x1 > x2: self.ser.write(b'r')
-                if y1 > y2: self.ser.write(b'u')
-                if y1 < y2: self.ser.write(b'd')
+            key = cv2.waitKey(1)
+            if key == 27:
+                break
                 
             if ret:
                 rgbImage = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
