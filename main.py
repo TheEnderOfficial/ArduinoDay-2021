@@ -59,7 +59,7 @@ class Thread(QThread):
         cap = cv2.VideoCapture(1)
         x2, y2 = cap.get(3) // 2, cap.get(4) // 2
         while True:
-            _, frame = cap.read()
+            ret, frame = cap.read()
 
             decodedObjects = pyzbar.decode(frame)
             for obj in decodedObjects:
@@ -67,7 +67,6 @@ class Thread(QThread):
                 x, y, w, h = obj.rect
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 5)
 
-            cv2.imshow("Frame", frame)
 
             key = cv2.waitKey(1)
             if key == 27:
