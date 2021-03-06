@@ -3,28 +3,29 @@ import serial
 import sys
 import glob
 import qt.design
+import qt.port
 import pyzbar.pyzbar as pyzbar
 
 
 from PyQt5.QtWidgets import QWidget, QLabel, QApplication
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot
+import PyQt5.QtCore
 from PyQt5.QtGui import QImage, QPixmap
 import serial.tools.list_ports
 
 font = cv2.FONT_HERSHEY_SIMPLEX
+speeds = ['1200','2400', '4800', '9600', '19200', '38400', '57600', '115200']
+
+
 
 class Thread(QThread):
     changePixmap = pyqtSignal(QImage)
 
-    def __init__(self, parent=None):
+    def __init__(self, port, parent=None):
         super().__init__(parent)
-        ports = list(serial.tools.list_ports.comports())
-        for port in ports:
-            print(port)
 
-        com = input("Select port:")
-        ser = serial.Serial(com, int(9600))
+        ser = serial.Serial(port, int(9600))
         self.ser = ser
 
     def run(self):
@@ -58,10 +59,10 @@ class App(QtWidgets.QMainWindow, qt.design.Ui_MainWindow):
     def setImage(self, image):
         self.label.setPixmap(QPixmap.fromImage(image))
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, port, parent=None):
+        super().__init__(parent, QtCore.Qt.Window)
         self.setupUi(self)
-        self.th = Thread(self)
+        self.th = Thread(port, self)
         self.th.changePixmap.connect(self.setImage)
         self.th.start()
         self.pushButton.clicked.connect(self.shoot)
@@ -90,9 +91,23 @@ class App(QtWidgets.QMainWindow, qt.design.Ui_MainWindow):
             self.th.ser.write(b'r')
 
 
+class SelectPortWindow(QtWidgets.QMainWindow, qt.port.Ui_Dialog):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        ports = []
+        [ports.append(i.device) for i in list(serial.tools.list_ports.comports())]
+        self.comboBox.addItems(ports)
+        self.pushButton.clicked.connect(self.open)
+
+    def open(self):
+        self.hide()
+        App(port=self.comboBox.currentText(), parent=self).show()
+        
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = App()
+    ex = SelectPortWindow()
     ex.show()
     sys.exit(app.exec_())
 
