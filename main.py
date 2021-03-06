@@ -10,34 +10,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QApplication
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QThread, Qt, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QImage, QPixmap
-
-def serial_ports():
-    """ Lists serial port names
-
-        :raises EnvironmentError:
-            On unsupported or unknown platforms
-        :returns:
-            A list of the serial ports available on the system
-    """
-    if sys.platform.startswith('win'):
-        ports = ['COM%s' % (i + 1) for i in range(256)]
-    elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
-        # this excludes your current terminal "/dev/tty"
-        ports = glob.glob('/dev/tty[A-Za-z]*')
-    elif sys.platform.startswith('darwin'):
-        ports = glob.glob('/dev/tty.*')
-    else:
-        raise EnvironmentError('Unsupported platform')
-
-    result = []
-    for port in ports:
-        try:
-            s = serial.Serial(port)
-            s.open()
-            result.append(port)
-        except (OSError, serial.SerialException):
-            pass
-    return result
+import serial.tools.list_ports
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
@@ -46,12 +19,11 @@ class Thread(QThread):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        print("Select port:")
-
-        for port in serial_ports():
+        ports = list(serial.tools.list_ports.comports())
+        for port in ports:
             print(port)
 
-        com = input()
+        com = input("Select port:")
         ser = serial.Serial(com, int(9600))
         self.ser = ser
 
@@ -65,6 +37,7 @@ class Thread(QThread):
             for obj in decodedObjects:
                 print(obj)
                 x, y, w, h = obj.rect
+                cv2.putText(frame, obj.data, (x, y), font, 15, (0, 255, 0))
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 5)
 
 

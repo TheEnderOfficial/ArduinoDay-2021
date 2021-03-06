@@ -41,13 +41,13 @@ class Ui_MainWindow(object):
         self.menubar.setGeometry(QtCore.QRect(0, 0, 647, 21))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
-
+        self.lineEdit.setText("1")
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "SuperUbetNeuralNetworkOpeNcv"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Software by Robo.Grade"))
         self.pushButton.setText(_translate("MainWindow", "Выстрел"))
         self.pushButton_2.setText(_translate("MainWindow", "Вниз"))
         self.pushButton_3.setText(_translate("MainWindow", "Вверх"))
