@@ -44,7 +44,7 @@ python main.py
 ```
 
 # Технечиские характеристки
-+ Турелью - гир-бокс созданый в кружке [Robo.Grade](https://robograde.ru/)
++ Турелью - гир-бокс созданный в кружке [Robo.Grade](https://robograde.ru/)
 + Язык программирования - [Python](https://python.org/)
 + Фреймворк для распознавания лиц - [OpenCV](https://opencv.org/)
 + Фреймворк для создание графического интерфеса - [Qt](https://qt.io) и [PyQT](https://ru.wikipedia.org/wiki/PyQt)
