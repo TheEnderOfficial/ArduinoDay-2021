@@ -4,11 +4,11 @@
 
 
 # Установка прошивки
-[Ссылка на репозиторий прошивки](https://github.com/TheEnderOfficial/ArduinoDay-2021-ArduinoCode)
+[Ссылка на репозиторий прошивки](https://github.com/TheEnderOfficial/ArduinoDay-2021/tree/arduino)
 
 Для прошивки требуется Arduino IDE скачать можно с сайта [Arduino](https://arduino.cc)
 ```
-git clone https://github.com/TheEnderOfficial/ArduinoDay-2021-ArduinoCode
+git clone --single-branch -b arduino https://github.com/TheEnderOfficial/ArduinoDay-2021
 ```
 Откройте Arduino IDE
 
