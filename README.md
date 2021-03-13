@@ -1,5 +1,5 @@
 # Турель с самонаведением ArduinoDay 2021
-
+# Внимание репозиторий переехал [сюда](https://github.com/RoboGradeIndustriesTeam/Pshennikov-ArduinoDay2021)
 Для конкурса [Arduino Day 2021](https://vk.com/arduinday2021_rostov_on_don)
 
 
